@@ -1,0 +1,39 @@
+name: Bug report
+description: A wrong result, a wrong inferred type, or a helper that throws
+labels: [bug]
+body:
+  - type: textarea
+    id: code
+    attributes:
+      label: Code
+      description: A minimal snippet. For type problems a TypeScript playground link is perfect.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: The output, the error, or the type TypeScript inferred.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: result-kit version
+      placeholder: '0.1.0'
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: TypeScript, Node or browser version
+      placeholder: 'TypeScript 5.7, Node 22.12'
+    validations:
+      required: true

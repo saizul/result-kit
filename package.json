@@ -1,0 +1,77 @@
+{
+  "name": "@saizul/result-kit",
+  "version": "0.1.0",
+  "description": "Tiny, tree-shakable Result<T, E> and Option<T> for TypeScript: map, andThen, match, unwrapOr, ResultAsync for promises, tryCatch, fromPromise, all/any/combine, typed error unions, safeTry generators, and safeFetch/safeJsonParse helpers. Zero dependencies.",
+  "keywords": [
+    "result",
+    "option",
+    "either",
+    "maybe",
+    "error-handling",
+    "typescript",
+    "functional",
+    "neverthrow",
+    "rust",
+    "fetch",
+    "json"
+  ],
+  "author": "Saizul Amin (https://github.com/saizul)",
+  "license": "MIT",
+  "homepage": "https://github.com/saizul/result-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saizul/result-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/saizul/result-kit/issues"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "type": "module",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/esm",
+    "dist/cjs",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "clean": "node -e \"require('node:fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc -p tsconfig.esm.json && tsc -p tsconfig.cjs.json && node scripts/write-cjs-package.mjs",
+    "build:test": "tsc -p tsconfig.test.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test:types": "tsc -p tsconfig.types.json",
+    "lint": "biome lint src test test-d scripts examples && npm run typecheck && npm run test:types",
+    "format": "biome format --write src test test-d scripts examples",
+    "format:check": "biome format src test test-d scripts examples",
+    "test": "npm run build && npm run build:test && npm run test:types && node scripts/run-tests.mjs",
+    "test:only": "node scripts/run-tests.mjs",
+    "prepublishOnly": "npm test"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6.7",
+    "@types/node": "^20.19.0",
+    "typescript": "^5.7.0"
+  }
+}
