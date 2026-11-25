@@ -21,7 +21,7 @@ Errors you can see in the type signature. A tiny `Result<T, E>` and
 - **Bridges to throwing code**: `tryCatch`, `fromThrowable`, `fromPromise`,
   `tryCatchAsync`.
 - **Combinators**: `all`, `any`, `combine` (objects), `partition`,
-  `allWithErrors`, `allAsync`, `anyAsync`.
+  `allWithErrors`, `combineWithErrors` (per-field errors), `allAsync`, `anyAsync`.
 - **`safeTry` generators** for early-return style without nesting.
 - **`safeFetch`, `safeFetchJson`, `safeJsonParse`, `safeJsonStringify`**
   that never throw and return tagged errors (`network`, `timeout`, `http`,
@@ -381,9 +381,10 @@ expected failure is an `Err`.
 | `allWithErrors([...])` | Like `all` but `Err` holds every error |
 | `any([...])` | The first `Ok`, or `Err([e1, e2, ...])` |
 | `combine({ a: r1, b: r2 })` | `Ok({ a: v1, b: v2 })`, or the first `Err` |
+| `combineWithErrors({ a: r1, b: r2 })` | Like `combine` but `Err({ b: e2 })` holds the error of every failed key |
 | `partition(results)` | `[values, errors]` |
 | `allAsync([...])`, `anyAsync([...])` | Concurrent versions for `ResultAsync`, `Promise<Result>` and `Result` |
-| `OkValues<R>`, `ErrValues<R>` | The tuple types used by `all` and `any` |
+| `OkValues<R>`, `ErrValues<R>`, `ErrRecord<R>` | The tuple types used by `all` and `any`, and the per-key error object of `combineWithErrors` |
 
 ### Option
 
@@ -456,6 +457,13 @@ Validating a form with every error at once:
 ```ts
 const form = allWithErrors([parseName(input.name), parseEmail(input.email), parseAge(input.age)]);
 if (!form.ok) showErrors(form.error); // every problem, not only the first
+```
+
+Or keyed by field, so each message lands next to its input:
+
+```ts
+const form = combineWithErrors({ name: parseName(input.name), email: parseEmail(input.email) });
+if (!form.ok) setFieldErrors(form.error); // { email: 'invalid email' }
 ```
 
 Trying mirrors until one answers:

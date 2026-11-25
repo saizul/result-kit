@@ -6,6 +6,7 @@ import {
   allAsync,
   any,
   combine,
+  combineWithErrors,
   type Err,
   err,
   errAsync,
@@ -149,6 +150,10 @@ const firstOk = any([numOrStr, ok(true)]);
 type _any = Expect<Equal<typeof firstOk, Result<number | boolean, [string, never]>>>;
 const record = combine({ a: numOrStr, b: find(1) });
 type _rec = Expect<Equal<typeof record, Result<{ a: number; b: { id: number } }, string | NotFound>>>;
+const fields = combineWithErrors({ a: numOrStr, b: find(1) });
+type _recErr = Expect<
+  Equal<typeof fields, Result<{ a: number; b: { id: number } }, { a?: string; b?: NotFound }>>
+>;
 const parts = partition([numOrStr]);
 type _p = Expect<Equal<typeof parts, [number[], string[]]>>;
 

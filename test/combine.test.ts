@@ -7,6 +7,7 @@ import {
   any,
   anyAsync,
   combine,
+  combineWithErrors,
   err,
   errAsync,
   ok,
@@ -85,5 +86,22 @@ describe('allAsync and anyAsync', () => {
   it('anyAsync', async () => {
     assert.deepEqual(await anyAsync([errAsync('a'), okAsync(2)]), ok(2));
     assert.deepEqual(await anyAsync([errAsync('a'), Promise.resolve(err('b'))]), err(['a', 'b']));
+  });
+});
+
+describe('combineWithErrors', () => {
+  it('returns every value when all keys succeed', () => {
+    assert.deepEqual(combineWithErrors({ a: ok(1), b: ok('x') }), ok({ a: 1, b: 'x' }));
+    assert.deepEqual(combineWithErrors({}), ok({}));
+  });
+
+  it('collects the error of every failed key and only those keys', () => {
+    const r = combineWithErrors({ name: ok('Ada'), email: err('invalid email'), age: err('too young') });
+    assert.deepEqual(r, err({ email: 'invalid email', age: 'too young' }));
+    assert.equal(r.isErr() && 'name' in r.error, false);
+  });
+
+  it('keeps falsy errors', () => {
+    assert.deepEqual(combineWithErrors({ a: err(0), b: err(undefined) }), err({ a: 0, b: undefined }));
   });
 });
