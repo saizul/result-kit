@@ -10,6 +10,7 @@ export {
   safeTryAsync,
 } from './async.js';
 export {
+  type ErrRecord,
   type ErrValues,
   type OkValues,
   all,
@@ -18,6 +19,7 @@ export {
   any,
   anyAsync,
   combine,
+  combineWithErrors,
   partition,
 } from './combine.js';
 export {

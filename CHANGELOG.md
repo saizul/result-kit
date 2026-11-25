@@ -6,6 +6,11 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `combineWithErrors()`: the object form of `allWithErrors()`. Returns `Ok` with every value,
+  or `Err` with an object holding the error of each failed key (`ErrRecord<R>` type).
+
 ## [0.1.0] - 2026-11-19
 
 ### Added

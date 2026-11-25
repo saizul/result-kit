@@ -77,6 +77,38 @@ export function combine<const R extends Record<string, AnyResult>>(
   return new Ok(values as { -readonly [K in keyof R]: InferOk<R[K]> });
 }
 
+/** The per-key errors collected by `combineWithErrors()`: only failed keys are present. */
+export type ErrRecord<R extends Record<string, unknown>> = { -readonly [K in keyof R]?: InferErr<R[K]> };
+
+/**
+ * `combine()` that keeps going: `Ok` with an object of values, or `Err` with
+ * an object holding the error of every failed key. Handy for form validation,
+ * where each field's message belongs next to that field.
+ *
+ * ```ts
+ * combineWithErrors({ name: parseName(x), age: parseAge(y) });
+ * // Ok({ name, age })  or  Err({ age: 'too young' })
+ * ```
+ */
+export function combineWithErrors<const R extends Record<string, AnyResult>>(
+  results: R,
+): Result<{ -readonly [K in keyof R]: InferOk<R[K]> }, ErrRecord<R>> {
+  const values: Record<string, unknown> = {};
+  const errors: Record<string, unknown> = {};
+  let failed = false;
+  for (const key of Object.keys(results)) {
+    const r = results[key]!;
+    if (r.ok) values[key] = r.value;
+    else {
+      errors[key] = r.error;
+      failed = true;
+    }
+  }
+  return failed
+    ? new Err(errors as ErrRecord<R>)
+    : new Ok(values as { -readonly [K in keyof R]: InferOk<R[K]> });
+}
+
 /** Splits results into `[values, errors]`. */
 export function partition<T, E>(results: Iterable<Result<T, E>>): [T[], E[]] {
   const values: T[] = [];
